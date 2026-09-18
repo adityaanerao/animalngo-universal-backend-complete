@@ -1,0 +1,44 @@
+# Compiled output & dependencies
+node_modules/
+dist/
+.angular/
+tmp/
+out-tsc/
+bazel-out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Binaries and executables
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+/backend/server
+/server
+
+# Environment variables & secrets
+.env
+*.env.local
+.env.*.local
+!.env.example
+
+# Test and coverage artifacts
+*.out
+*.test
+coverage/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

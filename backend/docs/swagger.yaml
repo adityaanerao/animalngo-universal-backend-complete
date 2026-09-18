@@ -1,0 +1,1121 @@
+basePath: /api/v1
+definitions:
+  handlers.CreateDepartmentRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  handlers.CreatePositionRequest:
+    properties:
+      department_id:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - department_id
+    - description
+    - name
+    type: object
+  handlers.CreateWorkflowRequest:
+    properties:
+      department_id:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - department_id
+    - description
+    - name
+    type: object
+  handlers.CreateWorkflowStepRequest:
+    properties:
+      name:
+        type: string
+      position_entity_id:
+        type: string
+      step_order:
+        type: integer
+    required:
+    - name
+    - position_entity_id
+    - step_order
+    type: object
+  handlers.ReorderRequest:
+    properties:
+      steps:
+        items:
+          properties:
+            id:
+              type: string
+            step_order:
+              type: integer
+          required:
+          - id
+          - step_order
+          type: object
+        type: array
+    required:
+    - steps
+    type: object
+  handlers.sendLoginOTPRequest:
+    properties:
+      mobile_number:
+        type: string
+    required:
+    - mobile_number
+    type: object
+  handlers.sendSignupOTPRequest:
+    properties:
+      full_name:
+        type: string
+      mobile_number:
+        type: string
+    required:
+    - full_name
+    - mobile_number
+    type: object
+  handlers.verifyOTPRequest:
+    properties:
+      mobile_number:
+        type: string
+      otp:
+        type: string
+    required:
+    - mobile_number
+    - otp
+    type: object
+  models.Department:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      positions:
+        items:
+          $ref: '#/definitions/models.Position'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  models.DynamicEntry:
+    properties:
+      created_at:
+        type: string
+      data:
+        type: object
+      id:
+        type: string
+      status:
+        type: string
+      step_id:
+        type: string
+      submitted_by:
+        type: string
+      updated_at:
+        type: string
+      workflow_id:
+        type: string
+    type: object
+  models.FormField:
+    properties:
+      created_at:
+        type: string
+      field_key:
+        type: string
+      field_order:
+        type: integer
+      field_type:
+        type: string
+      id:
+        type: string
+      is_required:
+        type: boolean
+      label:
+        type: string
+      options:
+        type: object
+      placeholder:
+        type: string
+      step_id:
+        type: string
+      updated_at:
+        type: string
+      validation:
+        type: object
+    type: object
+  models.Position:
+    properties:
+      created_at:
+        type: string
+      department:
+        $ref: '#/definitions/models.Department'
+      department_id:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      updated_at:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  models.StepRule:
+    properties:
+      action_then:
+        type: object
+      condition_if:
+        type: object
+      created_at:
+        type: string
+      id:
+        type: string
+      step_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      mobile_number:
+        type: string
+      position:
+        $ref: '#/definitions/models.Position'
+      position_id:
+        type: string
+      session_token:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Workflow:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      department_id:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.WorkflowStep'
+        type: array
+      target_table_type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.WorkflowStep:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      fields:
+        items:
+          $ref: '#/definitions/models.FormField'
+        type: array
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      position:
+        $ref: '#/definitions/models.Position'
+      position_id:
+        type: string
+      rules:
+        items:
+          $ref: '#/definitions/models.StepRule'
+        type: array
+      step_order:
+        type: integer
+      updated_at:
+        type: string
+      workflow:
+        $ref: '#/definitions/models.Workflow'
+      workflow_id:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+info:
+  contact:
+    email: support@alngo.org
+    name: API Support
+  description: This is the backend API for Animal NGO Universal.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Animal NGO Universal Backend API
+  version: "1.0"
+paths:
+  /auth/me:
+    get:
+      description: Get current authenticated user details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - auth
+  /auth/send-otp/login:
+    post:
+      consumes:
+      - application/json
+      description: Send an OTP for user login
+      parameters:
+      - description: Send Login OTP Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.sendLoginOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Send Login OTP
+      tags:
+      - auth
+  /auth/send-otp/signup:
+    post:
+      consumes:
+      - application/json
+      description: Send an OTP for user registration
+      parameters:
+      - description: Send OTP Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.sendSignupOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Send Signup OTP
+      tags:
+      - auth
+  /auth/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP and login/register
+      parameters:
+      - description: Verify OTP Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.verifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Verify OTP
+      tags:
+      - auth
+  /departments:
+    get:
+      description: Get a list of departments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Department'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List departments
+      tags:
+      - departments
+    post:
+      consumes:
+      - application/json
+      description: Create a new department
+      parameters:
+      - description: Department request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateDepartmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Department'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create department
+      tags:
+      - departments
+  /departments/{id}:
+    delete:
+      description: Delete department by ID
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete department
+      tags:
+      - departments
+    get:
+      description: Get department by ID
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Department'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get department
+      tags:
+      - departments
+    put:
+      consumes:
+      - application/json
+      description: Update department by ID
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Department request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Department'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Department'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update department
+      tags:
+      - departments
+  /departments/{id}/positions:
+    get:
+      description: Get a list of positions by department ID
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Position'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List positions by department
+      tags:
+      - departments
+  /entries:
+    get:
+      description: Get a list of entries
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DynamicEntry'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List entries
+      tags:
+      - entries
+  /entries/{id}:
+    get:
+      description: Get entry by ID
+      parameters:
+      - description: Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DynamicEntry'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get entry
+      tags:
+      - entries
+  /form-fields/{id}:
+    delete:
+      description: Delete form by ID
+      parameters:
+      - description: Form ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete form
+      tags:
+      - form-fields
+  /form-fields/step/{stepID}:
+    get:
+      description: Get a list of form-fields
+      parameters:
+      - description: Step ID
+        in: path
+        name: stepID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.FormField'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List form-fields
+      tags:
+      - form-fields
+  /positions:
+    get:
+      description: Get a list of positions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Position'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List positions
+      tags:
+      - positions
+    post:
+      consumes:
+      - application/json
+      description: Create a new position
+      parameters:
+      - description: Position request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreatePositionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Position'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create position
+      tags:
+      - positions
+  /positions/{id}:
+    delete:
+      description: Delete position by ID
+      parameters:
+      - description: Position ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete position
+      tags:
+      - positions
+    get:
+      description: Get position by ID
+      parameters:
+      - description: Position ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Position'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get position
+      tags:
+      - positions
+    put:
+      consumes:
+      - application/json
+      description: Update position by ID
+      parameters:
+      - description: Position ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Position request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Position'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Position'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update position
+      tags:
+      - positions
+  /steps/{id}/fields:
+    post:
+      consumes:
+      - application/json
+      description: Create a new form field for a step
+      parameters:
+      - description: Step ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Form request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FormField'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.FormField'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create form field
+      tags:
+      - form-fields
+  /steps/{id}/rules:
+    post:
+      consumes:
+      - application/json
+      description: Create a new rule for a step
+      parameters:
+      - description: Step ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rule request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.StepRule'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.StepRule'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create rule
+      tags:
+      - step-rules
+  /workflows:
+    get:
+      description: Get a list of workflows
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Workflow'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List workflows
+      tags:
+      - workflows
+    post:
+      consumes:
+      - application/json
+      description: Create a new workflow
+      parameters:
+      - description: Workflow request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateWorkflowRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Workflow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create workflow
+      tags:
+      - workflows
+  /workflows/{id}:
+    delete:
+      description: Delete workflow by ID
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete workflow
+      tags:
+      - workflows
+    get:
+      description: Get workflow by ID
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Workflow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get workflow
+      tags:
+      - workflows
+    put:
+      consumes:
+      - application/json
+      description: Update workflow by ID
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Workflow request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Workflow'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Workflow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update workflow
+      tags:
+      - workflows
+  /workflows/{id}/steps:
+    post:
+      consumes:
+      - application/json
+      description: Create a new workflow step
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Step request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateWorkflowStepRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.WorkflowStep'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create step
+      tags:
+      - workflow-steps
+  /workflows/{id}/steps/{step_id}/submit:
+    post:
+      consumes:
+      - application/json
+      description: Submit data for a specific workflow step
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Step ID
+        in: path
+        name: step_id
+        required: true
+        type: string
+      - description: Entry request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DynamicEntry'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.DynamicEntry'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Submit entry
+      tags:
+      - entries
+  /workflows/{id}/steps/reorder:
+    put:
+      consumes:
+      - application/json
+      description: Reorder workflow steps
+      parameters:
+      - description: Workflow ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Reorder request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ReorderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Reorder steps
+      tags:
+      - workflow-steps
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
